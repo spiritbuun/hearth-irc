@@ -1,0 +1,15 @@
+/target/
+/dist/
+/hearth-irc-implementation-handoff.md
+/mnt/
+__pycache__/
+*.pyc
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3.lock
+*.hearth-key
+*.pass
+*.key
+*.pem
+*.log
