@@ -675,8 +675,8 @@ impl Model {
             false,
             limit,
         )?;
-        if self.remote.is_some() {
-            if !self.remote.as_ref().unwrap().ready {
+        if let Some(remote) = &mut self.remote {
+            if !remote.ready {
                 return Err(libc::ENOTCONN);
             }
             let mut requests = Vec::new();
@@ -740,11 +740,12 @@ impl Model {
                 };
                 requests.push(request);
             }
-            let r = self.remote.as_mut().unwrap();
-            if r.queue.len() + usize::from(r.inflight.is_some()) + requests.len() > MAX_OUTBOUND {
+            if remote.queue.len() + usize::from(remote.inflight.is_some()) + requests.len()
+                > MAX_OUTBOUND
+            {
                 return Err(libc::EAGAIN);
             }
-            r.queue.extend(requests);
+            remote.queue.extend(requests);
         } else {
             let Node::Log(i) = node else {
                 return Err(libc::EOPNOTSUPP);
