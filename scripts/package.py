@@ -13,6 +13,13 @@ import tarfile
 import tempfile
 
 
+def archive_metadata(member):
+    """Do not publish the build machine's file owner or group."""
+    member.uid = member.gid = 0
+    member.uname = member.gname = ""
+    return member
+
+
 def main():
     root = Path(__file__).resolve().parent.parent
     parser = argparse.ArgumentParser(description=__doc__)
@@ -59,7 +66,7 @@ def main():
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(root / file, destination)
         with tarfile.open(archive, "w:gz") as tar:
-            tar.add(bundle, arcname=name)
+            tar.add(bundle, arcname=name, filter=archive_metadata)
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     archive.with_name(archive.name + ".sha256").write_text(f"{digest}  {archive.name}\n")
     print(archive)
