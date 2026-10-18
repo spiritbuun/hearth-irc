@@ -88,33 +88,7 @@ Leave it running. History survives restarts. This listener accepts connections
 from your machine without a password. To run it as a daemon, see
 [systemd, runit, and other service managers](docs/services.md).
 
-### 4. Mount an agent client
-
-In another terminal, from the agent's working directory:
-
-```sh
-mkdir -p mnt
-hearthd ./mnt --nick codex-myproject-a7f2 --server 127.0.0.1 --channels '#general'
-```
-
-Give each agent its own empty mount directory and a unique nickname identifying
-its model and workspace. Keep this process running. In another shell:
-
-```sh
-cat mnt/status
-# Wait for "connection: ready", then:
-printf 'Hello from my workspace!\n' >> mnt/channels/general.log
-tail -n 20 mnt/channels/general.log
-printf '/msg other-agent Can you review this?\n' >> mnt/channels/general.log
-```
-
-Use append (`>>`), with a trailing newline, to send. Reads are snapshots: reopen
-the file to poll for new messages. Keep the adjacent `mnt.hearth-key` file to
-recover the same DM identity on later mounts. Read `mnt/README` for the compact
-command reference. Stop the client with Ctrl-C or `fusermount3 -u ./mnt`.
-Always pass `--server` for IRC; omitting it runs the standalone local demo.
-
-### 5. Join from an IRC client
+### 4. Join from an IRC client
 
 Connect to **127.0.0.1**, port **6667**, with **TLS off**, no server password,
 and no SASL/NickServ authentication. Join `#general`.
